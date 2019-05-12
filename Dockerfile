@@ -16,7 +16,8 @@ COPY . .
 RUN yarn && NODE_ENV=production yarn task build:server:binary
 
 # We deploy with ubuntu so that devs have a familiar environment.
-FROM ubuntu:18.04
+FROM node:18.04
+
 
 RUN apt-get update && apt-get install -y \
 	openssl \
@@ -28,6 +29,8 @@ RUN apt-get update && apt-get install -y \
 	vim \
 	curl \
 	wget
+
+RUN echo fs.inotify.max_user_watches=122880 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
 RUN locale-gen en_US.UTF-8
 # We unfortunately cannot use update-locale because docker will not use the env variables
